@@ -1,94 +1,22 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { T } from "@/lib/i18n";
+import { useLang, LanguageSwitcher } from "./lang";
 
 const WA = process.env.NEXT_PUBLIC_WHATSAPP || "34600000000";
 const wa = (text) => `https://wa.me/${WA}?text=${encodeURIComponent(text)}`;
 
-const t = {
-  en: {
-    badge: "Official guide · First slot 9:00AM · Even for tomorrow",
-    h1a: "THE LANDSCAPE",
-    h1b: "IS THE STAR",
-    sub: "Caminito del Rey official guided tour — first 9AM slot, max 10 people, from Álora. Golden light, mist, silence. Before the crowds arrive.",
-    soldout: "Official tickets sold out?",
-    soldoutBody: "Guided tours have their own allocation. We usually have places even for tomorrow.",
-    ctaBook: "Book your morning",
-    ctaWhy: "Why 9AM is gold",
-    ctaWa: "Ask on WhatsApp",
-    whyTitle: "Why the first 9AM slot is GOLD",
-    why: [
-      ["Light", "Golden hour inside the canyon, soft light, no harsh shadows — the best hour for landscape photos."],
-      ["Wildlife", "Iberian ibex and griffon vultures are most active at 9AM, before the crowds — you hear only the river and wings."],
-      ["Silence", "Only 10 people. The boardwalks are almost empty."],
-      ["Temperature", "The canyon is cool — perfect for walking."],
-    ],
-    inclTitle: "Everything included. No surprises.",
-    incl: ["Official entry ticket", "Private small group (max 10)", "Official local guide (EN/ES)", "Shuttle bus (mandatory)", "Welcome pack: bag + water + snacks"],
-    price: "per person, all inclusive",
-    natiTitle: "I live here. This is my backyard.",
-    natiBody: "Hi! I'm Nati, your official local guide, completely in love with the Caminito. I'm not a big agency. I know when the ibex cross, where the vultures sleep, which rock sings in the wind.",
-    fauna: "Wildlife note: we see mountain goats daily. Never deer — wrong ecosystem. Griffon vultures nest on these cliffs.",
-    secretsTitle: "Málaga local secrets",
-    secretsSub: "Where I eat after guiding. Told only to my groups.",
-    faqTitle: "Quick answers",
-    faq: [
-      ["Where is the Caminito del Rey?", "In the Desfiladero de los Gaitanes gorge, Málaga province, between Álora, Ardales and El Chorro — about 60 km from Málaga city. Trains run from Málaga to El Chorro.", "/where-is-caminito-del-rey"],
-      ["Official site shows sold out — can I still go?", "Usually yes. Guided tours have separate allocations; we often have places even for the next day. Check the calendar or ask on WhatsApp.", "/book"],
-      ["How fast can I book?", "Under a minute. Pick a date, tell us how many you are, done. No payment needed to reserve — you'll get confirmation on WhatsApp.", "/book"],
-      ["Minimum age?", "8 years old — official park rule. Children pay a reduced price.", null],
-    ],
-    partner: "Hotel, campsite or host? Earn with every guest you send →",
-    footerLine: "First slot 9AM · Max 10 · Everything official",
-    book: "Book",
-  },
-  es: {
-    badge: "Guía oficial · Primer pase 9:00 · Incluso para mañana",
-    h1a: "EL PAISAJE",
-    h1b: "ES EL PROTAGONISTA",
-    sub: "Caminito del Rey, visita guiada oficial — primer pase 9:00, máx. 10 personas, desde Álora. Luz dorada, niebla, silencio. Antes de que lleguen las multitudes.",
-    soldout: "¿Entradas oficiales agotadas?",
-    soldoutBody: "Las visitas guiadas tienen su propio cupo. Solemos tener plazas incluso para mañana.",
-    ctaBook: "Reserva tu mañana",
-    ctaWhy: "Por qué las 9:00 son oro",
-    ctaWa: "Pregunta por WhatsApp",
-    whyTitle: "Por qué el primer pase de las 9:00 es ORO",
-    why: [
-      ["Luz", "Hora dorada en el cañón, luz suave, sin sombras duras — la mejor hora para fotos de paisaje."],
-      ["Fauna", "Cabras montesas y buitres leonados más activos a las 9:00, antes de las multitudes — solo se oye el río y las alas."],
-      ["Silencio", "Solo 10 personas. Las pasarelas casi vacías."],
-      ["Temperatura", "Cañón fresco, perfecto para caminar."],
-    ],
-    inclTitle: "Todo incluido. Sin sorpresas.",
-    incl: ["Entrada oficial", "Grupo reducido privado (máx. 10)", "Guía oficial local (ES/EN)", "Autobús lanzadera (obligatorio)", "Welcome pack: bolsa + agua + snacks"],
-    price: "por persona, todo incluido",
-    natiTitle: "Vivo aquí. Este es mi patio.",
-    natiBody: "¡Hola! Soy Nati, tu guía oficial local, completamente enamorada del Caminito. No soy una gran agencia. Sé cuándo cruzan las cabras, dónde duermen los buitres, qué roca canta con el viento.",
-    fauna: "Nota fauna: vemos cabras montesas a diario. Nunca ciervos — ecosistema equivocado. Los buitres leonados anidan en estos riscos.",
-    secretsTitle: "Secretos locales Málaga",
-    secretsSub: "Donde como después de guiar. Solo para mis grupos.",
-    faqTitle: "Respuestas rápidas",
-    faq: [
-      ["¿Dónde está el Caminito del Rey?", "En el Desfiladero de los Gaitanes, provincia de Málaga, entre Álora, Ardales y El Chorro — a unos 60 km de Málaga capital. Hay tren de Málaga a El Chorro.", "/where-is-caminito-del-rey"],
-      ["La web oficial dice agotado — ¿puedo ir igualmente?", "Normalmente sí. Las visitas guiadas tienen cupos aparte; solemos tener plazas incluso para el día siguiente. Mira el calendario o pregunta por WhatsApp.", "/book"],
-      ["¿Cuánto tardo en reservar?", "Menos de un minuto. Elige fecha, dinos cuántos sois, listo. Sin pago para reservar — confirmación por WhatsApp.", "/book"],
-      ["¿Edad mínima?", "8 años — norma oficial del paraje. Los niños pagan precio reducido.", null],
-    ],
-    partner: "¿Hotel, camping o alojamiento? Gana con cada huésped que nos envíes →",
-    footerLine: "Primer pase 9:00 · Máx. 10 · Todo oficial",
-    book: "Reservar",
-  },
-};
-
 const secrets = [
   "Bar El Caminito — migas con vistas, solo locales",
-  "Panadería Álora — mollete recién hecho a las 8:00",
+  "Panadería Álora — mollete recién hecho 8AM",
   "Lagos de El Chorro — baño después del tour (verano)",
 ];
 
 function OfferPopup({ lang }) {
   const [offer, setOffer] = useState(null);
   const [open, setOpen] = useState(false);
+  const s = T[lang];
   useEffect(() => {
     if (sessionStorage.getItem("offerSeen")) return;
     fetch("/api/offers/active")
@@ -102,6 +30,7 @@ function OfferPopup({ lang }) {
       .catch(() => {});
   }, []);
   if (!offer || !open) return null;
+  // Offers are written by Nati in EN + ES; other languages read the English version.
   const title = lang === "es" ? offer.titleEs : offer.titleEn;
   const body = lang === "es" ? offer.bodyEs : offer.bodyEn;
   const close = () => { setOpen(false); sessionStorage.setItem("offerSeen", "1"); };
@@ -109,23 +38,21 @@ function OfferPopup({ lang }) {
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-rock/40 p-4 sm:items-center" onClick={close}>
       <div className="card w-full max-w-sm overflow-hidden" onClick={(e) => e.stopPropagation()}>
         <div className="bg-terracotta p-5 text-white">
-          <p className="text-[11px] font-bold tracking-widest">{lang === "es" ? "OFERTA" : "OFFER"}</p>
+          <p className="text-[11px] font-bold tracking-widest">{s.offer}</p>
           <h3 className="font-serif text-[22px] font-bold leading-tight">{title}</h3>
         </div>
         <div className="p-5">
           {body && <p className="text-[14px] opacity-80">{body}</p>}
           {offer.discountPct > 0 && (
             <p className="mt-2 text-[13px]">
-              {lang === "es" ? "Código" : "Code"}:{" "}
-              <span className="rounded bg-sand px-2 py-0.5 font-mono font-bold">{offer.code}</span>
-              {" "}· −{offer.discountPct}%
+              {s.code}: <span className="rounded bg-sand px-2 py-0.5 font-mono font-bold">{offer.code}</span> · −{offer.discountPct}%
             </p>
           )}
           <div className="mt-4 flex gap-2">
             <Link href={`/book?offer=${offer.code}`} className="btn btn-primary flex-1" onClick={close}>
-              {t[lang].book}
+              {s.book}
             </Link>
-            <button className="btn btn-ghost" onClick={close}>✕</button>
+            <button className="btn btn-ghost" onClick={close} aria-label="Close">✕</button>
           </div>
         </div>
       </div>
@@ -134,8 +61,8 @@ function OfferPopup({ lang }) {
 }
 
 export default function Home() {
-  const [lang, setLang] = useState("en");
-  const s = t[lang];
+  const [lang, setLang] = useLang();
+  const s = T[lang];
   return (
     <div className="min-h-screen bg-cream">
       {/* Header */}
@@ -146,13 +73,7 @@ export default function Home() {
             <span className="text-[14px] font-extrabold tracking-wide">WONDER</span>
           </Link>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => setLang(lang === "en" ? "es" : "en")}
-              className="rounded-full border border-rock/15 px-3 py-1.5 text-[12px] font-bold"
-              aria-label="Switch language"
-            >
-              {lang === "en" ? "ES" : "EN"}
-            </button>
+            <LanguageSwitcher lang={lang} setLang={setLang} />
             <Link href="/book" className="btn btn-primary !px-5 !py-2 text-[13px]">{s.book}</Link>
           </div>
         </div>
@@ -177,7 +98,6 @@ export default function Home() {
           </h1>
           <p className="mt-6 max-w-xl text-[16px] leading-relaxed text-sand/85">{s.sub}</p>
 
-          {/* The differentiator */}
           <div className="mt-8 max-w-xl rounded-3xl border border-terracotta/40 bg-terracotta/15 p-5">
             <p className="font-serif text-[20px] font-bold text-peach">{s.soldout}</p>
             <p className="mt-1 text-[14px] text-sand/85">{s.soldoutBody}</p>
@@ -186,7 +106,7 @@ export default function Home() {
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/book" className="btn btn-primary">{s.ctaBook}</Link>
             <a href="#why" className="btn border border-sand/25 text-sand hover:bg-sand/10">{s.ctaWhy}</a>
-            <a href={wa("Hola Nati! Quiero info del Caminito del Rey")} className="btn border border-sand/25 text-sand hover:bg-sand/10">
+            <a href={wa("Hola Nati! Caminito del Rey info please 🙂")} className="btn border border-sand/25 text-sand hover:bg-sand/10">
               {s.ctaWa}
             </a>
           </div>
@@ -221,14 +141,10 @@ export default function Home() {
             </ul>
           </div>
           <div className="rounded-3xl bg-sand p-7 text-rock">
-            <div className="flex items-baseline gap-2">
-              <span className="font-serif text-[56px] font-extrabold leading-none">€52</span>
-            </div>
+            <span className="font-serif text-[56px] font-extrabold leading-none">€52</span>
             <p className="mt-1 text-[13px] opacity-70">{s.price}</p>
             <Link href="/book" className="btn btn-primary mt-6 w-full">{s.ctaBook}</Link>
-            <p className="mt-3 text-[12px] leading-relaxed opacity-60">
-              {lang === "es" ? "Respuesta en <15 min · Inglés y español · Sin depósito para consultar" : "Reply in <15 min · English & Spanish · No deposit to ask"}
-            </p>
+            <p className="mt-3 text-[12px] leading-relaxed opacity-60">{s.reply}</p>
           </div>
         </div>
       </section>
@@ -256,7 +172,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FAQ — SEO workhorse */}
+      {/* FAQ */}
       <section className="bg-sand">
         <div className="mx-auto max-w-6xl px-5 py-16 md:py-20">
           <h2 className="font-serif text-[clamp(28px,5vw,40px)] font-bold">{s.faqTitle}</h2>
@@ -267,7 +183,7 @@ export default function Home() {
                 <p className="mt-2 text-[14px] leading-relaxed opacity-75">{a}</p>
                 {href && (
                   <Link href={href} className="mt-3 inline-block text-[13px] font-bold text-terracotta underline underline-offset-4">
-                    {lang === "es" ? "Más" : "More"}
+                    {s.more}
                   </Link>
                 )}
               </div>
@@ -292,14 +208,13 @@ export default function Home() {
           </div>
           <nav className="flex gap-5 text-[13px] font-bold">
             <Link href="/book">{s.book}</Link>
-            <Link href="/where-is-caminito-del-rey">{lang === "es" ? "Dónde está" : "Where is it"}</Link>
-            <Link href="/affiliates">{lang === "es" ? "Colaboradores" : "Partners"}</Link>
+            <Link href="/where-is-caminito-del-rey">{s.whereIs}</Link>
+            <Link href="/affiliates">{s.partners}</Link>
             <a href={wa("Hola!")} aria-label="WhatsApp">WhatsApp</a>
           </nav>
         </div>
       </footer>
 
-      {/* Floating WhatsApp */}
       <a
         href={wa("Hola Nati!")}
         className="fixed bottom-5 right-5 z-40 grid h-14 w-14 place-items-center rounded-full bg-[#25D366] text-white shadow-lg"
