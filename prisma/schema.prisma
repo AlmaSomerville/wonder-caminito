@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Singleton row (id = 1). Nati edits this from /admin/pricing.
+model Settings {
+  id               Int     @id @default(1)
+  priceAdult       Float   @default(52)   // EUR, all inclusive
+  priceChild       Float   @default(42)   // EUR, ages 8-17 (under 8 not allowed on the Caminito)
+  defaultCapacity  Int     @default(10)
+  defaultTime      String  @default("09:00")
+  cutoffHours      Int     @default(14)   // stop selling a slot this many hours before it starts
+  minPerBooking    Int     @default(1)
+  maxPerBooking    Int     @default(10)
+  allowSameDay     Boolean @default(false)
+  oneBookingPerEmailPerDay Boolean @default(true) // "no duplicate bookings" rule
+  updatedAt        DateTime @updatedAt
+}
+
+model Slot {
+  id        String    @id @default(cuid())
+  date      String    // "2026-12-21" — kept as text, Europe/Madrid local date
+  time      String    // "09:00"
+  capacity  Int
+  closed    Boolean   @default(false)
+  note      String?   // e.g. "Fiesta especial"
+  bookings  Booking[]
+  createdAt DateTime  @default(now())
+
+  @@unique([date, time])
+  @@index([date])
+}
+
+enum BookingStatus {
+  PENDING    // just requested — Nati confirms (payment comes in phase 2 with Stripe)
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+model Booking {
+  id          String        @id @default(cuid())
+  ref         String        @unique // short human reference e.g. WDR-8F3K2
+  slot        Slot          @relation(fields: [slotId], references: [id])
+  slotId      String
+  name        String
+  email       String
+  phone       String        // WhatsApp preferred
+  adults      Int
+  children    Int           @default(0)
+  language    String        @default("en") // tour language preference
+  notes       String?
+  totalEUR    Float
+  offerCode   String?
+  affiliate   Affiliate?    @relation(fields: [affiliateId], references: [id])
+  affiliateId String?
+  status      BookingStatus @default(PENDING)
+  createdAt   DateTime      @default(now())
+
+  @@index([affiliateId])
+  @@index([createdAt])
+}
+
+model Affiliate {
+  id           String    @id @default(cuid())
+  code         String    @unique // tracking code, e.g. HOTELSOL
+  companyName  String    // razón social
+  contactName  String
+  email        String    @unique
+  passwordHash String
+  phone        String?
+  taxId        String    // NIF / CIF
+  address      String?   // domicilio fiscal
+  city         String?
+  postalCode   String?
+  iban         String?   // optional, for commission payouts later
+  notes        String?   // how they want to work (they invoice her / she invoices them)
+  approved     Boolean   @default(false)
+  bookings     Booking[]
+  createdAt    DateTime  @default(now())
+}
+
+model Offer {
+  id         String   @id @default(cuid())
+  code       String   @unique // e.g. GOLDEN10
+  titleEn    String
+  titleEs    String
+  bodyEn     String?
+  bodyEs     String?
+  discountPct Float   @default(0) // % off the total
+  active     Boolean  @default(false)
+  showPopup  Boolean  @default(true) // show as pop-up on the homepage
+  startsAt   DateTime?
+  endsAt     DateTime?
+  createdAt  DateTime @default(now())
+}
