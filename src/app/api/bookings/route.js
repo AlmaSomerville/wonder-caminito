@@ -5,6 +5,11 @@ import { validateAndPrice, bookingRef } from "@/lib/booking";
 
 export const dynamic = "force-dynamic";
 
+function parseExtras(raw) {
+  if (!raw) return [];
+  try { const v = typeof raw === "string" ? JSON.parse(raw) : raw; return Array.isArray(v) ? v : []; } catch { return []; }
+}
+
 // GET ?quote=1 — live price preview for the booking form
 export async function GET(req) {
   const u = new URL(req.url);
@@ -15,6 +20,7 @@ export async function GET(req) {
       children: u.searchParams.get("children"),
       offerCode: u.searchParams.get("offer") || null,
       email: null, // duplicate check only on real submit
+      extras: parseExtras(u.searchParams.get("extras")),
     });
     return NextResponse.json({ total, appliedOffer });
   } catch (e) {
@@ -32,9 +38,9 @@ export async function POST(req) {
   if (!name || !email || !phone) return NextResponse.json({ message: "Name, email and WhatsApp are required." }, { status: 400 });
 
   try {
-    const { slot, adults, children, total, appliedOffer } = await validateAndPrice({
+    const { slot, adults, children, total, appliedOffer, extrasLines } = await validateAndPrice({
       slotId: body.slotId, adults: body.adults, children: body.children,
-      offerCode: body.offerCode, email,
+      offerCode: body.offerCode, email, extras: parseExtras(body.extras),
     });
 
     // Affiliate credit: cookie set by the tracking link
@@ -55,6 +61,7 @@ export async function POST(req) {
         notes: (body.notes || "").slice(0, 500) || null,
         totalEUR: total,
         offerCode: appliedOffer,
+        extras: extrasLines.length ? extrasLines : undefined,
         affiliateId,
       },
     });
@@ -62,7 +69,7 @@ export async function POST(req) {
     return NextResponse.json({
       booking: {
         ref: booking.ref, name, date: slot.date, time: slot.time,
-        adults, children, totalEUR: total,
+        adults, children, totalEUR: total, extras: extrasLines,
       },
     });
   } catch (e) {

@@ -14,7 +14,7 @@ export const metadata = {
     template: "%s | Wonder Caminito del Rey",
   },
   description:
-    "Official Caminito del Rey guided tour with Nati, local official guide. First 9AM slot, max 10 people, €52 all inclusive — ticket, guide, shuttle, welcome pack. Tickets available even for tomorrow when the official site is sold out.",
+    "Official Caminito del Rey guided tours with official local guides. First 9AM slot, max 10 people, €52 all inclusive — ticket, guide, shuttle, welcome pack. Tickets available even for tomorrow when the official site is sold out.",
   keywords: [
     "Caminito del Rey", "Caminito del Rey tickets", "Caminito del Rey tickets sold out",
     "Caminito del Rey guided tour", "Caminito del Rey tomorrow", "where is Caminito del Rey",

@@ -8,8 +8,8 @@ export async function POST(req) {
   const g = guard(); if (g) return g;
   const b = await req.json().catch(() => ({}));
   const code = String(b.code || "").toUpperCase().replace(/[^A-Z0-9_-]/g, "").slice(0, 20);
-  if (!code || !b.titleEn || !b.titleEs) return NextResponse.json({ message: "Code and both titles are required." }, { status: 400 });
-  if (await prisma.offer.findUnique({ where: { code } })) return NextResponse.json({ message: "That code already exists." }, { status: 400 });
+  if (!code || !b.titleEn || !b.titleEs) return NextResponse.json({ message: "Faltan el código y los dos títulos." }, { status: 400 });
+  if (await prisma.offer.findUnique({ where: { code } })) return NextResponse.json({ message: "Ese código ya existe." }, { status: 400 });
   await prisma.offer.create({
     data: {
       code,

@@ -31,6 +31,8 @@ function BookInner() {
     new Date(d + "T12:00:00").toLocaleDateString(lang, { weekday: "short", day: "numeric", month: "short" });
 
   const [slots, setSlots] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [extras, setExtras] = useState({}); // { productId: { qty, size } }
   const [slotId, setSlotId] = useState(null);
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(0);
@@ -44,11 +46,22 @@ function BookInner() {
   useEffect(() => {
     fetch("/api/slots").then((r) => r.json()).then((d) => {
       setSlots(d.slots || []);
+      setProducts(d.products || []);
       if (d.slots?.length) setSlotId(d.slots[0].id);
     });
   }, []);
 
   const selected = useMemo(() => slots?.find((x) => x.id === slotId), [slots, slotId]);
+  const extrasPayload = useMemo(
+    () => Object.entries(extras).filter(([, v]) => v.qty > 0).map(([id, v]) => ({ id, qty: v.qty, size: v.size })),
+    [extras]
+  );
+  const setExtra = (p, patch) =>
+    setExtras((prev) => {
+      const sizes = (p.sizes || "").split(",").map((z) => z.trim()).filter(Boolean);
+      const cur = prev[p.id] || { qty: 0, size: sizes[1] || sizes[0] || null };
+      return { ...prev, [p.id]: { ...cur, ...patch } };
+    });
   const tomorrow = useMemo(() => {
     const d = new Date(); d.setDate(d.getDate() + 1);
     return d.toISOString().slice(0, 10);
@@ -57,10 +70,10 @@ function BookInner() {
   useEffect(() => {
     if (!slotId) return;
     const ctl = new AbortController();
-    fetch(`/api/bookings?quote=1&slotId=${slotId}&adults=${adults}&children=${children}&offer=${encodeURIComponent(offer)}`, { signal: ctl.signal })
+    fetch(`/api/bookings?quote=1&slotId=${slotId}&adults=${adults}&children=${children}&offer=${encodeURIComponent(offer)}&extras=${encodeURIComponent(JSON.stringify(extrasPayload))}`, { signal: ctl.signal })
       .then((r) => r.json()).then(setQuote).catch(() => {});
     return () => ctl.abort();
-  }, [slotId, adults, children, offer]);
+  }, [slotId, adults, children, offer, extrasPayload]);
 
   async function submit(e) {
     e.preventDefault();
@@ -69,7 +82,7 @@ function BookInner() {
       const res = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slotId, adults, children, offerCode: offer, ...form }),
+        body: JSON.stringify({ slotId, adults, children, offerCode: offer, extras: extrasPayload, ...form }),
       });
       const data = await res.json();
       if (!res.ok) throw data;
@@ -82,8 +95,9 @@ function BookInner() {
   }
 
   if (done) {
-    // Message to Nati stays in English/Spanish — she reads those.
-    const msg = `Hola Nati! Booking ${done.ref} — ${done.name}, ${done.date} ${done.time}, ${done.adults} adults${done.children ? ` + ${done.children} children` : ""}.`;
+    // Message to the business stays in English/Spanish — the team reads those.
+    const extrasText = (done.extras || []).map((l) => `${l.qty}× ${l.name}${l.size ? ` (${l.size})` : ""}`).join(", ");
+    const msg = `Hola Wonder! Booking ${done.ref} — ${done.name}, ${done.date} ${done.time}, ${done.adults} adults${done.children ? ` + ${done.children} children` : ""}${extrasText ? ` + ${extrasText}` : ""}.`;
     return (
       <main className="mx-auto max-w-md px-5 py-16 text-center">
         <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-turquoise text-3xl text-white">✓</div>
@@ -93,6 +107,9 @@ function BookInner() {
         </p>
         <div className="card mt-6 p-5 text-left text-[14px]">
           <p><b>{fmtDate(done.date)}</b> · {done.time} · {done.adults + done.children} {s.people}</p>
+          {(done.extras || []).map((l) => (
+            <p key={l.id} className="mt-1">+ {l.qty}× {l.name}{l.size ? ` (${l.size})` : ""}</p>
+          ))}
           <p className="mt-1">{s.total}: <b>€{done.totalEUR}</b> — {s.donePay}</p>
           <p className="mt-2 opacity-70">{s.doneConfirm}</p>
         </div>
@@ -147,6 +164,49 @@ function BookInner() {
         <Stepper label={s.adults} sub={s.adultsSub} value={adults} min={1} max={selected?.left ?? 10} onChange={setAdults} />
         <Stepper label={s.children} sub={s.childrenSub} value={children} min={0} max={Math.max(0, (selected?.left ?? 10) - adults)} onChange={setChildren} />
       </div>
+
+      {products.length > 0 && (
+        <>
+          <h2 className="label mt-6">{s.addExtras}</h2>
+          <div className="space-y-3">
+            {products.map((p) => {
+              const sizes = (p.sizes || "").split(",").map((z) => z.trim()).filter(Boolean);
+              const cur = extras[p.id] || { qty: 0, size: sizes[1] || sizes[0] || null };
+              return (
+                <div key={p.id} className="rounded-2xl border border-rock/15 bg-white px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    {p.photoUrl && <img src={p.photoUrl} alt="" className="h-12 w-12 shrink-0 rounded-xl object-cover" />}
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[15px] font-bold">{lang === "es" ? p.nameEs : p.nameEn} · €{p.price}</p>
+                      <p className="text-[12px] text-rock/70">{s.payWithTour}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button type="button" onClick={() => setExtra(p, { qty: Math.max(0, cur.qty - 1) })} className="grid h-9 w-9 place-items-center rounded-full border border-rock/20 text-lg font-bold" aria-label="−">−</button>
+                      <span className="w-5 text-center text-[16px] font-extrabold">{cur.qty}</span>
+                      <button type="button" onClick={() => setExtra(p, { qty: Math.min(20, cur.qty + 1) })} className="grid h-9 w-9 place-items-center rounded-full bg-rock text-lg font-bold text-sand" aria-label="+">+</button>
+                    </div>
+                  </div>
+                  {sizes.length > 0 && cur.qty > 0 && (
+                    <div className="mt-3 flex items-center gap-2">
+                      <span className="text-[13px] font-bold text-rock/75">{s.size}</span>
+                      {sizes.map((z) => (
+                        <button
+                          key={z}
+                          type="button"
+                          onClick={() => setExtra(p, { size: z })}
+                          className={`h-9 min-w-9 rounded-full px-2.5 text-[13px] font-bold ${cur.size === z ? "bg-rock text-sand" : "border border-rock/20"}`}
+                        >
+                          {z}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
 
       <form onSubmit={submit} className="mt-6 space-y-4">
         <div>

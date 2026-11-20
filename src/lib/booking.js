@@ -15,6 +15,30 @@ export function slotStart(slot) {
   return new Date(`${slot.date}T${slot.time}:00+01:00`);
 }
 
+export async function activeProducts() {
+  return prisma.product.findMany({
+    where: { active: true },
+    orderBy: [{ sort: "asc" }, { createdAt: "asc" }],
+    select: { id: true, nameEn: true, nameEs: true, descEn: true, descEs: true, price: true, sizes: true, photoUrl: true },
+  });
+}
+
+// extras: [{ id, qty, size }] from the booking form → priced lines from the database (client prices are never trusted)
+export async function priceExtras(extras) {
+  if (!Array.isArray(extras) || extras.length === 0) return { lines: [], total: 0 };
+  const products = await activeProducts();
+  const lines = [];
+  for (const e of extras.slice(0, 10)) {
+    const p = products.find((x) => x.id === e?.id);
+    const qty = Math.min(20, Math.max(0, parseInt(e?.qty, 10) || 0));
+    if (!p || qty === 0) continue;
+    const sizes = (p.sizes || "").split(",").map((z) => z.trim()).filter(Boolean);
+    const size = sizes.length ? (sizes.includes(e.size) ? e.size : sizes[0]) : null;
+    lines.push({ id: p.id, name: p.nameEs, size, qty, price: p.price });
+  }
+  return { lines, total: Math.round(lines.reduce((n, l) => n + l.qty * l.price, 0) * 100) / 100 };
+}
+
 export function paxOf(b) {
   return b.adults + b.children;
 }
@@ -58,7 +82,7 @@ export async function availableSlots() {
 }
 
 // Validates and prices a booking request. Throws { message } on rule violations.
-export async function validateAndPrice({ slotId, adults, children, offerCode, email }) {
+export async function validateAndPrice({ slotId, adults, children, offerCode, email, extras }) {
   const settings = await getSettings();
   adults = parseInt(adults, 10) || 0;
   children = parseInt(children, 10) || 0;
@@ -104,5 +128,10 @@ export async function validateAndPrice({ slotId, adults, children, offerCode, em
     }
   }
 
-  return { slot, adults, children, total, appliedOffer, settings };
+  // Offer discounts apply to the tour only, not to add-on products
+  const tourTotal = total;
+  const ex = await priceExtras(extras);
+  total = Math.round((tourTotal + ex.total) * 100) / 100;
+
+  return { slot, adults, children, total, tourTotal, extrasLines: ex.lines, extrasTotal: ex.total, appliedOffer, settings };
 }

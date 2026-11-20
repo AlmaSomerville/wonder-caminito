@@ -2,52 +2,36 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { T } from "@/lib/i18n";
+import { T, LANGS } from "@/lib/i18n";
 import { useLang, LanguageSwitcher } from "./lang";
 
 const WA = process.env.NEXT_PUBLIC_WHATSAPP || "34604411426";
 const wa = (text) => `https://wa.me/${WA}?text=${encodeURIComponent(text)}`;
 
-// Her 8 gallery concepts. Drop /public/gallery/<key>.jpg and the photo replaces the tile.
-const TILES = [
-  { key: "emerald-pool", bg: "#CDEFEA", accent: "#3AA99E", emoji: "💎", span: "col-span-2 md:row-span-2" },
-  { key: "cave-formations", bg: "#E8E0D0", accent: "#8B7355", emoji: "🪨", span: "" },
-  { key: "train-crossing", bg: "#D5E8D4", accent: "#5A7D5A", emoji: "🚂", span: "" },
-  { key: "suspension-bridge", bg: "#FFE8D6", accent: "#D96C3E", emoji: "🌉", span: "md:col-span-2" },
-  { key: "old-bridge-1905", bg: "#D6D0C8", accent: "#2D3A3A", emoji: "🏚️", span: "" },
-  { key: "rain-adventure", bg: "#C9D6E8", accent: "#4A6FA5", emoji: "🌧️", span: "" },
-  { key: "small-group", bg: "#E9D5FF", accent: "#7C3AED", emoji: "💜", span: "" },
-  { key: "river-view", bg: "#BFDBFE", accent: "#2563EB", emoji: "💙", span: "col-span-2 md:col-span-1" },
-];
+const FLAG = Object.fromEntries(LANGS.map((l) => [l.code, l.flag]));
+
+function initials(name) {
+  return name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+}
+
+// Guide photo if uploaded, otherwise initials on her turquoise→rock gradient
+function Avatar({ g, size = 48, ring = false }) {
+  return (
+    <span
+      className={`relative inline-grid shrink-0 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-turquoise to-rock font-display font-bold text-white ${ring ? "ring-2 ring-sand" : ""}`}
+      style={{ width: size, height: size, fontSize: size * 0.38 }}
+    >
+      {initials(g.name)}
+      {g.photoUrl && <img src={g.photoUrl} alt={g.name} className="absolute inset-0 h-full w-full object-cover" />}
+    </span>
+  );
+}
 
 function WaIcon({ className }) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
       <path fill="currentColor" d="M12.04 2C6.58 2 2.14 6.45 2.14 11.91c0 1.75.46 3.45 1.32 4.95L2.08 22l5.3-1.39a9.87 9.87 0 004.66 1.19h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm0 18.01h-.01a8.08 8.08 0 01-4.11-1.13l-.29-.17-3.15.83.84-3.07-.19-.31a8.09 8.09 0 01-1.24-4.25c0-4.47 3.63-8.1 8.1-8.1 2.16 0 4.19.84 5.72 2.37a8.03 8.03 0 012.37 5.73c0 4.47-3.63 8.1-8.09 8.1zm4.44-6.07c-.24-.12-1.42-.7-1.64-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.92-1.18-.71-.63-1.19-1.41-1.33-1.65-.14-.24-.02-.37.1-.49.1-.1.24-.26.36-.39.12-.13.16-.22.24-.36.08-.14.04-.27-.02-.39-.06-.12-.54-1.3-.74-1.78-.19-.46-.39-.4-.54-.41l-.46-.01c-.16 0-.42.06-.64.27-.22.22-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.58.18 1.1.16 1.51.1.46-.07 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28z" />
     </svg>
-  );
-}
-
-// Shows the photo once it loads; until then (or if it doesn't exist yet) her coloured tile.
-function Photo({ src, alt, className }) {
-  const [loaded, setLoaded] = useState(false);
-  const [failed, setFailed] = useState(false);
-  const ref = useRef(null);
-  useEffect(() => {
-    const img = ref.current;
-    if (img?.complete) img.naturalWidth > 0 ? setLoaded(true) : setFailed(true);
-  }, []);
-  if (failed) return null;
-  return (
-    <img
-      ref={ref}
-      src={src}
-      alt={alt}
-      loading="lazy"
-      onLoad={() => setLoaded(true)}
-      onError={() => setFailed(true)}
-      className={`${className} transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}
-    />
   );
 }
 
@@ -97,11 +81,14 @@ function OfferPopup({ s, lang }) {
   );
 }
 
-export default function Landing({ price = 52 }) {
+export default function Landing({ price = 52, guides = [], products = [], photos = [] }) {
   const [lang, setLang] = useLang();
   const s = T[lang];
   const euro = `€${Number.isInteger(price) ? price : price.toFixed(2)}`;
   const label = "text-[12px] font-bold uppercase tracking-[0.14em]";
+  const es = lang === "es";
+  const pName = (p) => (es ? p.nameEs : p.nameEn);
+  const pDesc = (p) => (es ? p.descEs : p.descEn);
 
   return (
     <div className="min-h-screen overflow-x-clip bg-sand text-rock">
@@ -171,17 +158,18 @@ export default function Landing({ price = 52 }) {
         <div className="absolute bottom-5 left-1/2 h-12 w-px -translate-x-1/2 bg-gradient-to-b from-white/0 to-white/80 opacity-70" aria-hidden />
       </section>
 
-      {/* Meet Nati + Why 9AM */}
+      {/* Intro: the team + Why 9AM */}
       <section className="mx-auto grid max-w-[1280px] items-start gap-12 px-5 py-16 md:gap-20 md:px-10 md:py-24 lg:grid-cols-[1.1fr_0.9fr]">
         <div>
           <div className="mb-6 flex items-center gap-3">
-            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-turquoise to-rock">
-              <span className="absolute inset-0 grid place-items-center font-display text-[20px] font-bold text-white">N</span>
-              <Photo src="/nati.jpg" alt="Nati, official Caminito del Rey guide" className="absolute inset-0 h-full w-full object-cover" />
+            <div className="flex -space-x-3">
+              {(guides.length ? guides.slice(0, 4) : [{ id: "w", name: "W" }]).map((g) => (
+                <Avatar key={g.id} g={g} size={44} ring />
+              ))}
             </div>
             <div>
-              <p className="text-[17px] font-extrabold leading-none">{s.guideName}</p>
-              <p className="mt-1.5 text-[11.5px] font-semibold uppercase tracking-[0.12em] text-rock/70">{s.meetGuide}</p>
+              <p className="text-[16px] font-extrabold leading-none">{s.teamName}</p>
+              <a href="#team" className="mt-1.5 block text-[11.5px] font-semibold uppercase tracking-[0.12em] text-rock/70 underline-offset-4 hover:underline">{s.meetTeam}</a>
             </div>
             <div className="ml-auto hidden gap-2 md:flex">
               <span className="rounded-full bg-turquoise/12 px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.1em] text-[#2b8a80]">{s.chipLocal}</span>
@@ -276,7 +264,7 @@ export default function Landing({ price = 52 }) {
               <Link href="/book" className="grid h-12 flex-1 place-items-center rounded-full bg-rock text-[13px] font-bold uppercase tracking-[0.06em] text-white transition hover:bg-black">
                 {s.book}
               </Link>
-              <a href={wa("Hola Nati! Caminito del Rey 🙂")} className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full border border-black/10 bg-sand text-[13px] font-bold uppercase tracking-[0.06em] transition hover:bg-white">
+              <a href={wa("Hola! Caminito del Rey 🙂")} className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full border border-black/10 bg-sand text-[13px] font-bold uppercase tracking-[0.06em] transition hover:bg-white">
                 <WaIcon className="h-4 w-4" /> WhatsApp
               </a>
             </div>
@@ -285,25 +273,80 @@ export default function Landing({ price = 52 }) {
         </div>
       </section>
 
-      {/* Gallery */}
-      <section className="mx-auto max-w-[1280px] px-5 py-16 md:px-10 md:py-24">
-        <p className={`${label} text-rock/65`}>{s.galleryLabel}</p>
-        <h2 className="mt-2 font-display text-[clamp(32px,5vw,48px)] font-bold leading-[0.98] tracking-[-0.015em]">{s.galleryTitle}</h2>
-        <div className="mt-10 grid auto-rows-[170px] grid-cols-2 gap-3 md:auto-rows-[240px] md:grid-cols-4 md:gap-4">
-          {TILES.map((t, i) => (
-            <div key={t.key} className={`group relative overflow-hidden rounded-[20px] border border-black/5 ${t.span}`} style={{ background: t.bg }}>
-              <div className="absolute inset-0 grid place-items-center" aria-hidden>
-                <span className="grid h-24 w-24 place-items-center rounded-full text-[40px]" style={{ background: `${t.accent}26` }}>{t.emoji}</span>
+      {/* Meet the team — managed by Nati in /admin/team */}
+      <section id="team" className="scroll-mt-16 mx-auto max-w-[1280px] px-5 py-16 md:px-10 md:py-24">
+        <h2 className="font-display text-[clamp(32px,5vw,48px)] font-bold leading-[0.98] tracking-[-0.015em]">{s.teamTitle}</h2>
+        <p className="mt-3 max-w-[56ch] text-[16px] leading-[1.6] text-rock/85">{s.teamSub}</p>
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {guides.map((g) => {
+            const bio = es ? g.bioEs || g.bioEn : g.bioEn || g.bioEs;
+            const langs = (g.languages || "").split(",").map((c) => c.trim()).filter((c) => FLAG[c]);
+            return (
+              <div key={g.id} className="rounded-[24px] border border-black/[0.06] bg-white p-6">
+                <div className="flex items-center gap-4">
+                  <Avatar g={g} size={64} />
+                  <div className="min-w-0">
+                    <p className="text-[19px] font-extrabold leading-tight">{g.name}</p>
+                    <p className="mt-1 text-[11.5px] font-bold uppercase tracking-[0.1em] text-terracotta">
+                      {g.role === "founder" ? s.roleFounder : s.roleGuide}
+                    </p>
+                  </div>
+                </div>
+                {langs.length > 0 && (
+                  <p className="mt-4 flex items-center gap-2 text-[13px] text-rock/75">
+                    {s.speaks}
+                    <span className="flex gap-1 text-[18px] leading-none">
+                      {langs.map((c) => <span key={c} title={c.toUpperCase()}>{FLAG[c]}</span>)}
+                    </span>
+                  </p>
+                )}
+                {bio && <p className="mt-3 text-[15px] leading-[1.6] text-rock/85">{bio}</p>}
               </div>
-              <Photo src={`/gallery/${t.key}.jpg`} alt={s.gallery[i]} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-              <span className="absolute bottom-3 left-3 rounded-full bg-black/40 px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.08em] text-white backdrop-blur">
-                {s.gallery[i]}
-              </span>
+            );
+          })}
+          <div className="flex flex-col justify-between rounded-[24px] border-2 border-dashed border-turquoise/40 bg-turquoise/[0.06] p-6">
+            <div>
+              <p className="text-[19px] font-extrabold leading-tight">{s.joinTitle}</p>
+              <p className="mt-2 text-[15px] leading-[1.6] text-rock/85">{s.joinBody}</p>
             </div>
-          ))}
+            <a
+              href={wa("Hola! Soy guía oficial del Caminito del Rey y me gustaría trabajar con Wonder.")}
+              className="mt-5 inline-flex h-11 w-fit items-center gap-2 rounded-full bg-rock px-5 text-[13px] font-bold uppercase tracking-[0.06em] text-white"
+            >
+              <WaIcon className="h-4 w-4" /> {s.joinCta}
+            </a>
+          </div>
         </div>
       </section>
+
+      {/* Gallery — only real photos uploaded in /admin/photos; hidden until there are some */}
+      {photos.length > 0 && (
+        <section className="mx-auto max-w-[1280px] px-5 pb-16 md:px-10 md:pb-24">
+          <p className={`${label} text-rock/65`}>{s.galleryLabel}</p>
+          <h2 className="mt-2 font-display text-[clamp(32px,5vw,48px)] font-bold leading-[0.98] tracking-[-0.015em]">{s.galleryTitle}</h2>
+          <div className={`mt-10 grid grid-cols-2 gap-3 md:gap-4 ${photos.length >= 5 ? "auto-rows-[170px] md:auto-rows-[240px] md:grid-cols-4" : "auto-rows-[200px] md:auto-rows-[280px] md:grid-cols-3"}`}>
+            {photos.slice(0, 8).map((p, i) => {
+              const span =
+                photos.length >= 5
+                  ? ["col-span-2 md:row-span-2", "", "", "md:col-span-2", "", "", "", ""][i]
+                  : i === 0 && photos.length % 2 === 1 ? "col-span-2 md:col-span-1" : "";
+              return (
+                <figure key={p.id} className={`group relative overflow-hidden rounded-[20px] bg-rock/10 ${span}`}>
+                  <img src={p.url} alt={p.caption || "Caminito del Rey"} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+                  {p.caption && (
+                    <>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
+                      <figcaption className="absolute bottom-3 left-3 rounded-full bg-black/40 px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.08em] text-white backdrop-blur">
+                        {p.caption}
+                      </figcaption>
+                    </>
+                  )}
+                </figure>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* FAQ — kept for Google */}
       <section className="border-t border-black/10 bg-white">
@@ -325,8 +368,8 @@ export default function Landing({ price = 52 }) {
         </div>
       </section>
 
-      {/* Her three closing cards */}
-      <section className="mx-auto grid max-w-[1280px] gap-5 px-5 py-16 md:px-10 md:py-20 lg:grid-cols-3">
+      {/* Closing cards */}
+      <section className={`mx-auto grid max-w-[1280px] gap-5 px-5 py-16 md:px-10 md:py-20 ${products.length ? "lg:grid-cols-3" : "md:grid-cols-2"}`}>
         <div className="rounded-[24px] border border-black/10 bg-white p-7">
           <p className={`${label} text-rock/65`}>{s.secretsTitle}</p>
           <p className="mt-3 text-[22px] font-extrabold leading-[1.15] tracking-tight">{s.secretsH}</p>
@@ -341,29 +384,45 @@ export default function Landing({ price = 52 }) {
           <span className="mt-6 inline-flex rounded-full border border-black/10 bg-sand px-3 py-1 text-[11px] font-bold uppercase tracking-[0.1em] text-rock/75">{s.secretsChip}</span>
         </div>
 
-        <div className="relative overflow-hidden rounded-[24px] bg-rock p-7 text-sand">
-          <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-turquoise/20 blur-2xl" aria-hidden />
-          <div className="relative">
-            <p className={`${label} text-turquoise`}>Extras</p>
-            <p className="mt-3 text-[22px] font-extrabold leading-[1.15] tracking-tight">{s.extrasTitle}</p>
-            <p className="mt-3 text-[15px] leading-[1.6] text-sand/85">{s.extrasBody}</p>
-            <div className="mt-5 flex gap-2">
-              {["S", "M", "L", "XL"].map((z) => (
-                <a key={z} href={wa(`Hola Nati! T-shirt ${z}?`)} className="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-[13px] font-bold transition hover:bg-white hover:text-rock">
-                  {z}
-                </a>
-              ))}
+        {products.length > 0 && (
+          <div className="relative overflow-hidden rounded-[24px] bg-rock p-7 text-sand">
+            <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-turquoise/20 blur-2xl" aria-hidden />
+            <div className="relative">
+              <p className={`${label} text-turquoise`}>{s.extrasLabel}</p>
+              <ul className="mt-4 space-y-4">
+                {products.map((p) => (
+                  <li key={p.id} className="flex gap-4">
+                    {p.photoUrl && <img src={p.photoUrl} alt={pName(p)} className="h-16 w-16 shrink-0 rounded-2xl object-cover" />}
+                    <div className="min-w-0">
+                      <p className="text-[19px] font-extrabold leading-tight">
+                        {pName(p)} <span className="font-semibold text-turquoise">€{p.price}</span>
+                      </p>
+                      {pDesc(p) && <p className="mt-1 text-[14px] leading-[1.5] text-sand/85">{pDesc(p)}</p>}
+                      {p.sizes && (
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {p.sizes.split(",").map((z) => (
+                            <span key={z} className="grid h-8 min-w-8 place-items-center rounded-full bg-white/10 px-2 text-[12px] font-bold">{z.trim()}</span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-5 text-[13px] leading-[1.5] text-sand/75">{s.extrasCardSub}</p>
+              <Link href="/book" className="mt-4 inline-flex h-11 items-center rounded-full bg-white px-5 text-[13px] font-bold uppercase tracking-[0.06em] text-rock">
+                {s.book}
+              </Link>
             </div>
-            <span className="mt-6 inline-block rounded-full border border-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.1em] text-sand/75">{s.extrasChip}</span>
           </div>
-        </div>
+        )}
 
         <div className="rounded-[24px] bg-terracotta p-7 text-white">
           <p className={`${label} text-white/85`}>{s.wonderLabel}</p>
-          <p className="mt-3 text-[22px] font-extrabold leading-[1.15] tracking-tight">{s.natiTitle}</p>
+          <p className="mt-3 text-[22px] font-extrabold leading-[1.15] tracking-tight">{s.wonderTitle}</p>
           <p className="mt-3 text-[15px] leading-[1.6] text-white/90">{s.wonderBody}</p>
-          <a href={wa("Hola Nati!")} className="mt-6 inline-flex h-11 items-center gap-2 rounded-full bg-white px-5 text-[13px] font-bold uppercase tracking-[0.06em] text-terracotta transition hover:bg-sand">
-            <WaIcon className="h-4 w-4" /> {s.chatNati}
+          <a href={wa("Hola!")} className="mt-6 inline-flex h-11 items-center gap-2 rounded-full bg-white px-5 text-[13px] font-bold uppercase tracking-[0.06em] text-terracotta transition hover:bg-sand">
+            <WaIcon className="h-4 w-4" /> {s.chatUs}
           </a>
         </div>
       </section>
@@ -381,7 +440,7 @@ export default function Landing({ price = 52 }) {
           <div className="flex items-center gap-3">
             <span className="grid h-8 w-8 place-items-center rounded-full bg-rock text-[11px] font-bold text-sand">W</span>
             <div className="text-[13px] leading-[1.35]">
-              <p className="font-bold">Wonder Caminito · Nati</p>
+              <p className="font-bold">Wonder Caminito</p>
               <p className="text-rock/70">{s.tagline}</p>
             </div>
           </div>
@@ -399,7 +458,7 @@ export default function Landing({ price = 52 }) {
       </footer>
 
       <a
-        href={wa("Hola Nati!")}
+        href={wa("Hola!")}
         aria-label="WhatsApp"
         className="fixed bottom-5 right-5 z-40 grid h-14 w-14 place-items-center rounded-full bg-[#25D366] text-white shadow-[0_12px_32px_rgba(37,211,102,0.4)] transition hover:scale-[1.05]"
       >

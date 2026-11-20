@@ -34,7 +34,7 @@ export default function AffiliatesPage() {
         <h1 className="mt-6 tracking-tight text-[30px] font-bold">Application received</h1>
         <p className="mt-3 text-[15px] leading-relaxed opacity-75">
           Your tracking code is <span className="rounded bg-sand px-2 py-0.5 font-mono font-bold">{done.code}</span>.
-          Nati reviews every partner personally — you'll get a WhatsApp or email when you're approved,
+          Our team reviews every partner — you'll get a WhatsApp or email when you're approved,
           and then your link and dashboard go live at <b>/partner</b>.
         </p>
         <Link href="/" className="btn btn-dark mt-8">Back to home</Link>
@@ -51,7 +51,7 @@ export default function AffiliatesPage() {
       <p className="mt-3 max-w-lg text-[15px] leading-relaxed opacity-80">
         Hotels, campsites, hosts and local businesses: you get a personal tracking link and QR.
         Every guest who books through it is credited to you — you see it live in your own dashboard.
-        Commission terms are agreed directly with Nati (you invoice us, or we invoice you — your choice).
+        Commission terms are agreed directly with Wonder (you invoice us, or we invoice you — your choice).
       </p>
       <ul className="mt-6 grid gap-3 text-[14px] sm:grid-cols-3">
         {["Your own tracking link", "Live bookings dashboard", "Guests love the 9AM slot"].map((x) => (
@@ -73,7 +73,7 @@ export default function AffiliatesPage() {
           <div><label className="label">Postal code</label><input className="field" value={form.postalCode} onChange={set("postalCode")} /></div>
           <div className="sm:col-span-2"><label className="label">IBAN (optional — for payouts, if we invoice you it's not needed)</label><input className="field" value={form.iban} onChange={set("iban")} /></div>
           <div className="sm:col-span-2"><label className="label">Preferred tracking code (optional, e.g. HOTELSOL)</label><input className="field uppercase" maxLength={20} value={form.code} onChange={set("code")} /></div>
-          <div className="sm:col-span-2"><label className="label">How do you want to work? (optional)</label><input className="field" placeholder="e.g. we invoice monthly, 10% discussed with Nati…" value={form.notes} onChange={set("notes")} /></div>
+          <div className="sm:col-span-2"><label className="label">How do you want to work? (optional)</label><input className="field" placeholder="e.g. we invoice monthly, 10% as agreed…" value={form.notes} onChange={set("notes")} /></div>
         </div>
         {error && <p className="rounded-2xl bg-terracotta/10 p-4 text-[14px] font-bold text-terracotta">{error}</p>}
         <button disabled={busy} className="btn btn-primary w-full disabled:opacity-50">{busy ? "Sending…" : "Apply to partner with Wonder"}</button>

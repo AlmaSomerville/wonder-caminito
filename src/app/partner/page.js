@@ -73,7 +73,7 @@ export default async function PartnerDashboard() {
           </div>
         )}
         <p className="mt-3 text-[13px] text-rock/70">
-          Commission is settled directly with Nati per your agreement (your invoice to us, or ours to you).
+          Commission is settled directly with Wonder per your agreement (your invoice to us, or ours to you).
         </p>
       </section>
 

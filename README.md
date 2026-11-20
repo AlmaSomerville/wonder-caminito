@@ -12,7 +12,7 @@ Built with Next.js 14, Prisma and Postgres. One repo, deploys to Vercel in minut
 | `/where-is-caminito-del-rey` | Google | SEO page targeting that exact search (and the whereiscaminitodelrey.com domain) |
 | `/affiliates` | Hotels etc. | Partner pitch + signup with Spanish tax fields (razón social, NIF/CIF, IBAN) |
 | `/partner` | Approved partners | Their tracking link, their bookings only, monthly totals |
-| `/admin` | Nati | Overview, bookings (confirm/cancel + WhatsApp them), availability, prices & rules, pop-up offers, partner approvals |
+| `/admin` | Nati (in Spanish) | Resumen, Reservas, Fechas, Precios y reglas, Ofertas, Equipo, Productos, Fotos, Colaboradores |
 
 How affiliate tracking works: a partner shares `https://yoursite.com/?ref=THEIRCODE` (or `/a/THEIRCODE`).
 Visitors get a 30-day cookie; any booking they make is credited to that partner automatically.
@@ -49,11 +49,17 @@ The landing and booking pages are translated into the top 10 visitor languages f
 - Offers are written by Nati in EN + ES; the other 8 languages see the English version of the offer text.
 - The tour itself runs in EN/ES (that's Nati), so the "tour language" selector stays EN/ES by design.
 
-## Photos
+## Photos, team and extra products (all managed by Nati in /admin)
 
-- Hero: `public/hero.jpg` (Nati's own gorge photo). Share preview image: `public/og.jpg`.
-- Gallery: drop photos into `public/gallery/` with the names listed in `public/gallery/README.txt` — each one replaces its coloured tile automatically.
-- Nati's portrait: `public/nati.jpg` replaces the "N" circle.
+- **Fotos**: she uploads from her phone; photos are shrunk in the browser (~300 KB) and stored in Vercel Blob.
+  The gallery only appears on the site once there are photos. **One-time setup:** Vercel → Storage → Create Database →
+  **Blob** → connect to this project → redeploy (adds `BLOB_READ_WRITE_TOKEN`).
+- **Equipo**: guides shown in "Meet the team": photo, role, languages (shown as flags), short bio in ES/EN.
+  Nati is added automatically as founder on the first deploy. Subcontracted guides are added the same way.
+- **Productos**: T-shirts and other extras. Hidden until switched on; when visible they appear on the homepage and as an
+  optional add-on in the booking flow (priced on the server, shown on the booking with size). A "Camiseta Wonder" is created
+  hidden on first deploy at a placeholder €20; set the real price before showing it.
+- Hero photo: `public/hero.jpg`. Share preview: `public/og.jpg`.
 
 ## Fonts
 

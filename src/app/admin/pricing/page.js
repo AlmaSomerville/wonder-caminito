@@ -12,8 +12,8 @@ export default async function AdminPricing() {
     <>
       <AdminNav />
       <main className="mx-auto max-w-4xl px-5 py-8">
-        <h1 className="tracking-tight text-[26px] font-bold">Prices & rules</h1>
-        <p className="text-[13px] text-rock/70">Changes apply immediately to new bookings. Existing bookings keep the price they booked at.</p>
+        <h1 className="text-[26px] font-extrabold tracking-tight">Precios y reglas</h1>
+        <p className="text-[15px] text-rock/80">Los cambios se aplican al momento a las reservas nuevas (y al precio de la web). Las reservas existentes mantienen su precio.</p>
         <PricingForm initial={JSON.parse(JSON.stringify(s))} />
       </main>
     </>

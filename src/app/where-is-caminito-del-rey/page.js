@@ -46,7 +46,7 @@ export default function WhereIs() {
       <div className="mt-10 rounded-3xl bg-rock p-7 text-sand">
         <h2 className="tracking-tight text-[24px] font-bold">Easiest way to visit: go guided, go at 9AM</h2>
         <p className="mt-2 text-[14px] leading-relaxed opacity-85">
-          Official entry ticket, shuttle bus, welcome pack and an official local guide — Nati, who lives in Álora —
+          Official entry ticket, shuttle bus, welcome pack and an official guide who lives around the gorge —
           for €52 all inclusive. First slot of the day, max 10 people, golden light, empty boardwalks.
           Often bookable even for tomorrow.
         </p>

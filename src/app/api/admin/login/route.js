@@ -10,7 +10,7 @@ export async function POST(req) {
   const a = Buffer.from(String(password || ""));
   const b = Buffer.from(expected);
   const ok = expected && a.length === b.length && crypto.timingSafeEqual(a, b);
-  if (!ok) return NextResponse.json({ message: "Wrong password" }, { status: 401 });
+  if (!ok) return NextResponse.json({ message: "Contraseña incorrecta" }, { status: 401 });
   setSessionCookie("wadmin", { role: "admin" });
   return NextResponse.json({ ok: true });
 }

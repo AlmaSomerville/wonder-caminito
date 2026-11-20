@@ -1,4 +1,5 @@
 import { EXTRA } from "./i18n-extra";
+import { TEAM } from "./i18n-team";
 
 // 10 languages, chosen for Caminito del Rey / Costa del Sol visitor nationalities.
 // Device language is detected on load; English is the fallback; the choice is remembered.
@@ -512,3 +513,5 @@ export const T = {
 
 // Merge in the strings for the sections from Nati's original design
 for (const l of Object.keys(EXTRA)) Object.assign(T[l], EXTRA[l]);
+// Team positioning last: overrides the earlier one-person wording
+for (const l of Object.keys(TEAM)) Object.assign(T[l], TEAM[l]);

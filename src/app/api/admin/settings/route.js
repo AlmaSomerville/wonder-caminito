@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { guard } from "../_guard";
 
@@ -26,5 +27,6 @@ export async function PATCH(req) {
       oneBookingPerEmailPerDay: !!b.oneBookingPerEmailPerDay,
     },
   });
+  revalidatePath("/"); // homepage shows the new price straight away
   return NextResponse.json({ ok: true });
 }

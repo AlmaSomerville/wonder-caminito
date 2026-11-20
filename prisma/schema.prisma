@@ -19,6 +19,7 @@ model Settings {
   maxPerBooking    Int     @default(10)
   allowSameDay     Boolean @default(false)
   oneBookingPerEmailPerDay Boolean @default(true) // "no duplicate bookings" rule
+  defaultsVersion  Int     @default(0) // starter-data migrations already applied (see scripts/db-setup.mjs)
   updatedAt        DateTime @updatedAt
 }
 
@@ -57,6 +58,7 @@ model Booking {
   notes       String?
   totalEUR    Float
   offerCode   String?
+  extras      Json?         // add-on products: [{ name, size, qty, price }]
   affiliate   Affiliate?    @relation(fields: [affiliateId], references: [id])
   affiliateId String?
   status      BookingStatus @default(PENDING)
@@ -98,4 +100,42 @@ model Offer {
   startsAt   DateTime?
   endsAt     DateTime?
   createdAt  DateTime @default(now())
+}
+
+// Guides shown in "Meet the team". Nati adds subcontracted guides from /admin/team.
+model Guide {
+  id        String   @id @default(cuid())
+  name      String
+  role      String   @default("guide") // "founder" | "guide"
+  languages String   @default("es,en") // comma-separated language codes, shown as flags
+  bioEn     String?
+  bioEs     String?
+  photoUrl  String?
+  active    Boolean  @default(true)
+  sort      Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+// Additional products (T-shirts etc.). Hidden until Nati switches them on.
+model Product {
+  id        String   @id @default(cuid())
+  nameEn    String
+  nameEs    String
+  descEn    String?
+  descEs    String?
+  price     Float
+  sizes     String?  // e.g. "S,M,L,XL" — empty for products without sizes
+  photoUrl  String?
+  active    Boolean  @default(false)
+  sort      Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+// Gallery photos uploaded from /admin/photos (stored in Vercel Blob)
+model Photo {
+  id        String   @id @default(cuid())
+  url       String
+  caption   String?
+  sort      Int      @default(0)
+  createdAt DateTime @default(now())
 }

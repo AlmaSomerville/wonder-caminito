@@ -3,6 +3,7 @@ import { getSettings } from "@/lib/settings";
 import { requireAdmin } from "../lib";
 import { AdminNav, ActionButton } from "../ui";
 import { AddDatesForm } from "./form";
+import { fecha } from "../fmt";
 
 export const dynamic = "force-dynamic";
 
@@ -20,8 +21,8 @@ export default async function AdminAvailability() {
     <>
       <AdminNav />
       <main className="mx-auto max-w-4xl px-5 py-8">
-        <h1 className="tracking-tight text-[26px] font-bold">Availability</h1>
-        <p className="text-[13px] text-rock/70">Open the dates you can get tickets for. Guests only see open dates with space, inside the booking window.</p>
+        <h1 className="text-[26px] font-extrabold tracking-tight">Fechas</h1>
+        <p className="text-[15px] text-rock/80">Abre las fechas para las que tienes entradas. Los clientes solo ven fechas abiertas, con plazas y dentro del plazo de reserva.</p>
 
         <AddDatesForm defaultTime={settings.defaultTime} defaultCapacity={settings.defaultCapacity} />
 
@@ -29,22 +30,22 @@ export default async function AdminAvailability() {
           {slots.map((s) => {
             const pax = s.bookings.reduce((n, b) => n + b.adults + b.children, 0);
             return (
-              <div key={s.id} className={`card flex flex-wrap items-center justify-between gap-2 p-4 ${s.closed ? "opacity-50" : ""}`}>
+              <div key={s.id} className={`card flex flex-wrap items-center justify-between gap-2 p-4 ${s.closed ? "opacity-60" : ""}`}>
                 <div>
                   <p className="font-bold">
-                    {s.date} · {s.time}
-                    {s.note && <span className="ml-2 rounded-full bg-peach px-2 py-0.5 text-[11px] text-terracotta">{s.note}</span>}
-                    {s.closed && <span className="ml-2 text-[11px] font-bold text-terracotta">CLOSED</span>}
+                    <span className="capitalize">{fecha(s.date)}</span> · {s.time}
+                    {s.note && <span className="ml-2 rounded-full bg-peach px-2 py-0.5 text-[12px] text-terracotta">{s.note}</span>}
+                    {s.closed && <span className="ml-2 text-[12px] font-bold text-terracotta">CERRADA</span>}
                   </p>
-                  <p className="text-[14px] text-rock/80">{pax}/{s.capacity} booked</p>
+                  <p className="text-[14px] text-rock/80">{pax}/{s.capacity} reservadas</p>
                 </div>
                 <div className="flex gap-2">
                   <ActionButton url="/api/admin/slots" body={{ id: s.id, closed: !s.closed }}>
-                    {s.closed ? "Reopen" : "Close"}
+                    {s.closed ? "Reabrir" : "Cerrar"}
                   </ActionButton>
                   {pax === 0 && (
-                    <ActionButton url="/api/admin/slots" method="DELETE" body={{ id: s.id }} confirmText="Delete this date?">
-                      Delete
+                    <ActionButton url="/api/admin/slots" method="DELETE" body={{ id: s.id }} confirmText="¿Borrar esta fecha?">
+                      Borrar
                     </ActionButton>
                   )}
                 </div>
