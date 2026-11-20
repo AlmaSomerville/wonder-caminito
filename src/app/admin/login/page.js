@@ -18,7 +18,7 @@ export default function AdminLogin() {
 
   return (
     <main className="mx-auto max-w-sm px-5 py-20">
-      <h1 className="font-serif text-[30px] font-bold">Hola Nati 👋</h1>
+      <h1 className="tracking-tight text-[30px] font-bold">Hola Nati 👋</h1>
       <p className="mt-1 text-[14px] opacity-70">Your panel for prices, dates, bookings and offers.</p>
       <form onSubmit={submit} className="mt-6 space-y-4">
         <input className="field" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} autoFocus />

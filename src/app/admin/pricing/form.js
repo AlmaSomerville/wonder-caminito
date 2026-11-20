@@ -48,7 +48,7 @@ export function PricingForm({ initial }) {
               value={form[k]}
               onChange={(e) => setForm({ ...form, [k]: type === "number" ? Number(e.target.value) : e.target.value })}
             />
-            {help && <p className="mt-1.5 text-[12px] opacity-60">{help}</p>}
+            {help && <p className="mt-1.5 text-[13px] text-rock/70">{help}</p>}
           </div>
         ))}
         {toggles.map(([k, label, help]) => (
@@ -56,7 +56,7 @@ export function PricingForm({ initial }) {
             <input type="checkbox" className="mt-1 h-5 w-5" checked={!!form[k]} onChange={(e) => setForm({ ...form, [k]: e.target.checked })} />
             <span>
               <span className="block text-[14px] font-bold">{label}</span>
-              <span className="block text-[12px] opacity-60">{help}</span>
+              <span className="block text-[13px] text-rock/70">{help}</span>
             </span>
           </label>
         ))}

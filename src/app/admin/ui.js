@@ -16,7 +16,7 @@ export function AdminNav() {
   const path = usePathname();
   const router = useRouter();
   return (
-    <div className="sticky top-0 z-30 border-b border-black/[0.06] bg-cream/95 backdrop-blur">
+    <div className="sticky top-0 z-30 border-b border-black/[0.06] bg-sand/95 backdrop-blur">
       <div className="mx-auto max-w-4xl px-5">
         <div className="flex items-center justify-between py-3">
           <p className="text-[13px] font-extrabold tracking-wide">WONDER · Nati's panel</p>

@@ -12,8 +12,8 @@ export default async function AdminOffers() {
     <>
       <AdminNav />
       <main className="mx-auto max-w-4xl px-5 py-8">
-        <h1 className="font-serif text-[26px] font-bold">Pop-up offers</h1>
-        <p className="text-[13px] opacity-60">One active offer shows as a pop-up on the homepage. Its code also works in the booking form.</p>
+        <h1 className="tracking-tight text-[26px] font-bold">Pop-up offers</h1>
+        <p className="text-[13px] text-rock/70">One active offer shows as a pop-up on the homepage. Its code also works in the booking form.</p>
         <NewOfferForm />
         <div className="mt-6 space-y-3">
           {offers.map((o) => (
@@ -25,7 +25,7 @@ export default async function AdminOffers() {
                     <span className="ml-2 rounded bg-sand px-2 py-0.5 font-mono text-[11px]">{o.code}</span>
                     {o.discountPct > 0 && <span className="ml-2 text-turquoise">−{o.discountPct}%</span>}
                   </p>
-                  <p className="text-[13px] opacity-70">{o.titleEs}</p>
+                  <p className="text-[14px] text-rock/80">{o.titleEs}</p>
                   <p className="text-[12px] opacity-50">
                     {o.showPopup ? "Pop-up on" : "Code only"} ·
                     {o.startsAt ? ` from ${o.startsAt.toISOString().slice(0, 10)}` : ""}

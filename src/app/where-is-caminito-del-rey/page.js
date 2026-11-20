@@ -19,7 +19,7 @@ export default function WhereIs() {
   return (
     <main className="mx-auto max-w-2xl px-5 py-12">
       <Link href="/" className="text-[13px] font-bold opacity-60">← Wonder — Caminito del Rey</Link>
-      <h1 className="mt-4 font-serif text-[clamp(32px,7vw,48px)] font-bold leading-tight">
+      <h1 className="mt-4 tracking-tight text-[clamp(32px,7vw,48px)] font-bold leading-tight">
         Where is the Caminito del Rey?
       </h1>
       <p className="mt-5 text-[16px] leading-relaxed">
@@ -44,7 +44,7 @@ export default function WhereIs() {
       </div>
 
       <div className="mt-10 rounded-3xl bg-rock p-7 text-sand">
-        <h2 className="font-serif text-[24px] font-bold">Easiest way to visit: go guided, go at 9AM</h2>
+        <h2 className="tracking-tight text-[24px] font-bold">Easiest way to visit: go guided, go at 9AM</h2>
         <p className="mt-2 text-[14px] leading-relaxed opacity-85">
           Official entry ticket, shuttle bus, welcome pack and an official local guide — Nati, who lives in Álora —
           for €52 all inclusive. First slot of the day, max 10 people, golden light, empty boardwalks.

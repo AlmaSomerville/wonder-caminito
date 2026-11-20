@@ -16,8 +16,8 @@ export default async function AdminAffiliates() {
     <>
       <AdminNav />
       <main className="mx-auto max-w-4xl px-5 py-8">
-        <h1 className="font-serif text-[26px] font-bold">Partners</h1>
-        <p className="text-[13px] opacity-60">Approve a partner and their tracking link starts working. Commission terms are whatever you agree with each one.</p>
+        <h1 className="tracking-tight text-[26px] font-bold">Partners</h1>
+        <p className="text-[13px] text-rock/70">Approve a partner and their tracking link starts working. Commission terms are whatever you agree with each one.</p>
         <div className="mt-5 space-y-3">
           {affiliates.length === 0 && <p className="text-[14px] opacity-60">No applications yet. Send hotels to {site}/affiliates</p>}
           {affiliates.map((a) => {
@@ -32,8 +32,8 @@ export default async function AdminAffiliates() {
                       {a.companyName}
                       <span className="ml-2 rounded bg-sand px-2 py-0.5 font-mono text-[11px]">{a.code}</span>
                     </p>
-                    <p className="text-[13px] opacity-70">{a.contactName} · {a.email}{a.phone ? ` · ${a.phone}` : ""}</p>
-                    <p className="text-[13px] opacity-70">NIF/CIF: {a.taxId}{a.city ? ` · ${a.city}` : ""}{a.iban ? ` · IBAN ✓` : ""}</p>
+                    <p className="text-[14px] text-rock/80">{a.contactName} · {a.email}{a.phone ? ` · ${a.phone}` : ""}</p>
+                    <p className="text-[14px] text-rock/80">NIF/CIF: {a.taxId}{a.city ? ` · ${a.city}` : ""}{a.iban ? ` · IBAN ✓` : ""}</p>
                     {a.notes && <p className="mt-1 rounded-xl bg-sand px-3 py-1.5 text-[13px]">📝 {a.notes}</p>}
                     <p className="mt-1 text-[12px] font-bold text-turquoise">{n} bookings · {pax} guests · €{eur.toFixed(0)} booked value</p>
                   </div>
@@ -50,7 +50,7 @@ export default async function AdminAffiliates() {
                     {a.approved ? "Deactivate" : "Approve"}
                   </ActionButton>
                   {a.approved && (
-                    <span className="self-center text-[12px] opacity-60">Link: {site}/?ref={a.code}</span>
+                    <span className="self-center text-[13px] text-rock/70">Link: {site}/?ref={a.code}</span>
                   )}
                 </div>
               </div>

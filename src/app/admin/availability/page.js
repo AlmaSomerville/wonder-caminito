@@ -20,8 +20,8 @@ export default async function AdminAvailability() {
     <>
       <AdminNav />
       <main className="mx-auto max-w-4xl px-5 py-8">
-        <h1 className="font-serif text-[26px] font-bold">Availability</h1>
-        <p className="text-[13px] opacity-60">Open the dates you can get tickets for. Guests only see open dates with space, inside the booking window.</p>
+        <h1 className="tracking-tight text-[26px] font-bold">Availability</h1>
+        <p className="text-[13px] text-rock/70">Open the dates you can get tickets for. Guests only see open dates with space, inside the booking window.</p>
 
         <AddDatesForm defaultTime={settings.defaultTime} defaultCapacity={settings.defaultCapacity} />
 
@@ -36,7 +36,7 @@ export default async function AdminAvailability() {
                     {s.note && <span className="ml-2 rounded-full bg-peach px-2 py-0.5 text-[11px] text-terracotta">{s.note}</span>}
                     {s.closed && <span className="ml-2 text-[11px] font-bold text-terracotta">CLOSED</span>}
                   </p>
-                  <p className="text-[13px] opacity-70">{pax}/{s.capacity} booked</p>
+                  <p className="text-[14px] text-rock/80">{pax}/{s.capacity} booked</p>
                 </div>
                 <div className="flex gap-2">
                   <ActionButton url="/api/admin/slots" body={{ id: s.id, closed: !s.closed }}>

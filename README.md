@@ -55,6 +55,18 @@ The landing and booking pages are translated into the top 10 visitor languages f
 - Offers are written by Nati in EN + ES; the other 8 languages see the English version of the offer text.
 - The tour itself runs in EN/ES (that's Nati), so the "tour language" selector stays EN/ES by design.
 
+## Photos
+
+- Hero: `public/hero.jpg` (Nati's own gorge photo). Share preview image: `public/og.jpg`.
+- Gallery: drop photos into `public/gallery/` with the names listed in `public/gallery/README.txt` — each one replaces its coloured tile automatically.
+- Nati's portrait: `public/nati.jpg` replaces the "N" circle.
+
+## Fonts
+
+Her two brand fonts are self-hosted in `src/app/fonts/` (no Google request: faster, GDPR-friendly), subset to cover all 10 languages
+including Polish and Nordic characters. Bodoni Moda is used only for big headlines, at a sturdier optical size for legibility;
+everything you read is Plus Jakarta Sans.
+
 ## Nati's daily routine (2 minutes)
 
 1. Open `/admin` → the orange banner shows new bookings → **Confirm** → **WhatsApp them** (message is pre-written).

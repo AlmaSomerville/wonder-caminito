@@ -31,7 +31,7 @@ export default function AffiliatesPage() {
     return (
       <main className="mx-auto max-w-md px-5 py-16 text-center">
         <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-turquoise text-3xl text-white">✓</div>
-        <h1 className="mt-6 font-serif text-[30px] font-bold">Application received</h1>
+        <h1 className="mt-6 tracking-tight text-[30px] font-bold">Application received</h1>
         <p className="mt-3 text-[15px] leading-relaxed opacity-75">
           Your tracking code is <span className="rounded bg-sand px-2 py-0.5 font-mono font-bold">{done.code}</span>.
           Nati reviews every partner personally — you'll get a WhatsApp or email when you're approved,
@@ -45,7 +45,7 @@ export default function AffiliatesPage() {
   return (
     <main className="mx-auto max-w-2xl px-5 py-10">
       <Link href="/" className="text-[13px] font-bold opacity-60">← Wonder</Link>
-      <h1 className="mt-3 font-serif text-[clamp(30px,6vw,44px)] font-bold leading-tight">
+      <h1 className="mt-3 tracking-tight text-[clamp(30px,6vw,44px)] font-bold leading-tight">
         Send us your guests.<br />Earn with every booking.
       </h1>
       <p className="mt-3 max-w-lg text-[15px] leading-relaxed opacity-80">
@@ -60,7 +60,7 @@ export default function AffiliatesPage() {
       </ul>
 
       <form onSubmit={submit} className="card mt-8 space-y-4 p-6">
-        <h2 className="font-serif text-[22px] font-bold">Become a partner</h2>
+        <h2 className="tracking-tight text-[22px] font-bold">Become a partner</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <div><label className="label">Business name (razón social)</label><input required className="field" value={form.companyName} onChange={set("companyName")} /></div>
           <div><label className="label">Contact person</label><input required className="field" value={form.contactName} onChange={set("contactName")} /></div>
@@ -77,7 +77,7 @@ export default function AffiliatesPage() {
         </div>
         {error && <p className="rounded-2xl bg-terracotta/10 p-4 text-[14px] font-bold text-terracotta">{error}</p>}
         <button disabled={busy} className="btn btn-primary w-full disabled:opacity-50">{busy ? "Sending…" : "Apply to partner with Wonder"}</button>
-        <p className="text-center text-[13px] opacity-60">
+        <p className="text-center text-[13px] text-rock/70">
           Already approved? <Link href="/partner/login" className="font-bold underline">Partner login</Link>
         </p>
       </form>

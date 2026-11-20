@@ -5,14 +5,14 @@ import Link from "next/link";
 import { T } from "@/lib/i18n";
 import { useLang, LanguageSwitcher } from "../lang";
 
-const WA = process.env.NEXT_PUBLIC_WHATSAPP || "34600000000";
+const WA = process.env.NEXT_PUBLIC_WHATSAPP || "34604411426";
 
 function Stepper({ value, onChange, min = 0, max = 10, label, sub }) {
   return (
     <div className="flex items-center justify-between rounded-2xl border border-rock/15 bg-white px-4 py-3">
       <div>
         <p className="text-[15px] font-bold">{label}</p>
-        <p className="text-[12px] opacity-60">{sub}</p>
+        <p className="text-[13px] text-rock/70">{sub}</p>
       </div>
       <div className="flex items-center gap-3">
         <button type="button" onClick={() => onChange(Math.max(min, value - 1))} className="grid h-10 w-10 place-items-center rounded-full border border-rock/20 text-xl font-bold active:scale-95" aria-label={`− ${label}`}>−</button>
@@ -87,7 +87,7 @@ function BookInner() {
     return (
       <main className="mx-auto max-w-md px-5 py-16 text-center">
         <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-turquoise text-3xl text-white">✓</div>
-        <h1 className="mt-6 font-serif text-[32px] font-bold">{s.doneTitle}</h1>
+        <h1 className="mt-6 tracking-tight text-[32px] font-bold">{s.doneTitle}</h1>
         <p className="mt-2 text-[15px] opacity-75">
           {s.doneHeld} <span className="rounded bg-sand px-2 py-0.5 font-mono font-bold">{done.ref}</span>
         </p>
@@ -110,8 +110,8 @@ function BookInner() {
         <Link href="/" className="text-[13px] font-bold opacity-60">← Wonder</Link>
         <LanguageSwitcher lang={lang} setLang={setLang} />
       </div>
-      <h1 className="mt-3 font-serif text-[34px] font-bold leading-tight">{s.bTitle}</h1>
-      <p className="mt-1 text-[14px] opacity-70">{s.bSub}</p>
+      <h1 className="mt-3 tracking-tight text-[32px] font-extrabold leading-tight">{s.bTitle}</h1>
+      <p className="mt-1 text-[15px] text-rock/80">{s.bSub}</p>
 
       <h2 className="label mt-7">{s.pickDate}</h2>
       {slots === null ? (
@@ -127,14 +127,14 @@ function BookInner() {
               key={x.id}
               type="button"
               onClick={() => setSlotId(x.id)}
-              className={`min-w-[108px] rounded-2xl border p-3 text-center transition ${
+              className={`min-w-[116px] rounded-2xl border p-3 text-center transition ${
                 x.id === slotId ? "border-rock bg-rock text-sand" : x.note ? "border-terracotta/40 bg-[#FFF1EB]" : "border-rock/15 bg-white"
               }`}
             >
               {x.date === tomorrow && (
                 <span className={`mb-1 inline-block rounded-full px-2 py-0.5 text-[9px] font-extrabold tracking-wide ${x.id === slotId ? "bg-turquoise text-rock" : "bg-turquoise text-white"}`}>{s.tomorrow}</span>
               )}
-              <p className="text-[14px] font-bold">{fmtDate(x.date)}</p>
+              <p className="whitespace-nowrap text-[14px] font-bold">{fmtDate(x.date)}</p>
               <p className={`text-[11px] ${x.id === slotId ? "opacity-80" : "opacity-60"}`}>{x.time} · {x.left} {s.left}</p>
               {x.note && <p className="mt-0.5 text-[10px] font-bold text-terracotta">{x.note}</p>}
             </button>
@@ -185,7 +185,7 @@ function BookInner() {
           <div className="mx-auto flex max-w-md items-center gap-4 px-5 py-4">
             <div className="min-w-0">
               <p className="text-[11px] font-bold uppercase tracking-wide opacity-50">{s.total}</p>
-              <p className="font-serif text-[26px] font-extrabold leading-none">
+              <p className="tracking-tight text-[26px] font-extrabold leading-none">
                 €{quote?.total ?? "—"}
                 {quote?.appliedOffer && <span className="ml-2 align-middle text-[11px] font-bold text-turquoise">{quote.appliedOffer} ✓</span>}
               </p>

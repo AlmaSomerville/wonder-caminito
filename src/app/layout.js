@@ -1,4 +1,9 @@
 import "./globals.css";
+import localFont from "next/font/local";
+
+// Her two brand fonts, self-hosted (fast, no Google request — GDPR-friendly), subset for all 10 languages.
+const sans = localFont({ src: "./fonts/jakarta.woff2", variable: "--font-sans", weight: "200 800", display: "swap" });
+const display = localFont({ src: "./fonts/bodoni.woff2", variable: "--font-display", weight: "400 900", display: "swap" });
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://wondercaminito.com";
 
@@ -22,13 +27,14 @@ export const metadata = {
     title: "Caminito del Rey guided tours — tickets even for tomorrow",
     description: "9AM first slot · max 10 people · €52 all inclusive · official local guide.",
     locale: "en_US",
-    alternateLocale: "es_ES",
+    alternateLocale: ["es_ES", "de_DE", "fr_FR", "nl_NL", "pl_PL", "it_IT", "pt_PT", "sv_SE", "da_DK"],
+    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "Caminito del Rey boardwalk in the misty Gaitanes gorge" }],
   },
   robots: { index: true, follow: true },
 };
 
 export const viewport = {
-  themeColor: "#2D3A3A",
+  themeColor: "#F5F1E8",
   width: "device-width",
   initialScale: 1,
 };
@@ -91,7 +97,7 @@ const jsonLd = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${sans.variable} ${display.variable}`}>
       <body className="font-sans antialiased">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         {children}

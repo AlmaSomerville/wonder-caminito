@@ -65,7 +65,7 @@ export default async function AdminHome() {
           </div>
         )}
 
-        <h1 className="font-serif text-[26px] font-bold">Next tour days</h1>
+        <h1 className="tracking-tight text-[26px] font-bold">Next tour days</h1>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           {upcoming.length === 0 && (
             <p className="text-[14px] opacity-60">No open dates. <Link className="font-bold underline" href="/admin/availability">Add some →</Link></p>
@@ -75,7 +75,7 @@ export default async function AdminHome() {
             return (
               <div key={s.id} className="card p-4">
                 <p className="font-bold">{s.date} · {s.time} {s.note && <span className="text-terracotta">· {s.note}</span>}</p>
-                <p className="text-[13px] opacity-70">{pax}/{s.capacity} guests · {s.bookings.length} bookings</p>
+                <p className="text-[14px] text-rock/80">{pax}/{s.capacity} guests · {s.bookings.length} bookings</p>
                 <div className="mt-2 h-2 overflow-hidden rounded-full bg-sand">
                   <div className="h-full rounded-full bg-turquoise" style={{ width: `${Math.min(100, (pax / s.capacity) * 100)}%` }} />
                 </div>
@@ -84,8 +84,8 @@ export default async function AdminHome() {
           })}
         </div>
 
-        <h2 className="mt-10 font-serif text-[26px] font-bold">Month by month</h2>
-        <p className="text-[13px] opacity-60">Bookings made that month (cancelled excluded), and where they came from.</p>
+        <h2 className="mt-10 tracking-tight text-[26px] font-bold">Month by month</h2>
+        <p className="text-[13px] text-rock/70">Bookings made that month (cancelled excluded), and where they came from.</p>
         <div className="mt-3 space-y-3">
           {monthKeys.length === 0 && <p className="text-[14px] opacity-60">No bookings yet — they'll appear here.</p>}
           {monthKeys.map((k) => {

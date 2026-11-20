@@ -1,3 +1,5 @@
+import { EXTRA } from "./i18n-extra";
+
 // 10 languages, chosen for Caminito del Rey / Costa del Sol visitor nationalities.
 // Device language is detected on load; English is the fallback; the choice is remembered.
 
@@ -507,3 +509,6 @@ export const T = {
     doneWa: "Åbn WhatsApp for hurtigere bekræftelse", doneBack: "Tilbage til forsiden", people: "personer",
   },
 };
+
+// Merge in the strings for the sections from Nati's original design
+for (const l of Object.keys(EXTRA)) Object.assign(T[l], EXTRA[l]);

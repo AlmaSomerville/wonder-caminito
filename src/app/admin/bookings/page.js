@@ -30,7 +30,7 @@ export default async function AdminBookings({ searchParams }) {
       <AdminNav />
       <main className="mx-auto max-w-4xl px-5 py-8">
         <div className="flex items-center justify-between">
-          <h1 className="font-serif text-[26px] font-bold">Bookings</h1>
+          <h1 className="tracking-tight text-[26px] font-bold">Bookings</h1>
           <div className="flex gap-1 rounded-full bg-sand p-1 text-[13px] font-bold">
             <a href="/admin/bookings" className={`rounded-full px-4 py-1.5 ${view === "upcoming" ? "bg-rock text-sand" : ""}`}>Upcoming</a>
             <a href="/admin/bookings?view=past" className={`rounded-full px-4 py-1.5 ${view === "past" ? "bg-rock text-sand" : ""}`}>Past</a>
@@ -51,11 +51,11 @@ export default async function AdminBookings({ searchParams }) {
                       {b.slot.date} · {b.slot.time} — {b.name}
                       <span className="ml-2 rounded bg-sand px-2 py-0.5 font-mono text-[11px]">{b.ref}</span>
                     </p>
-                    <p className="text-[13px] opacity-70">
+                    <p className="text-[14px] text-rock/80">
                       {b.adults} adults{b.children ? ` + ${b.children} children` : ""} · €{b.totalEUR}
                       {b.offerCode && <span className="text-turquoise"> · {b.offerCode}</span>} · tour in {b.language.toUpperCase()}
                     </p>
-                    <p className="text-[13px] opacity-70">{b.phone} · {b.email}</p>
+                    <p className="text-[14px] text-rock/80">{b.phone} · {b.email}</p>
                     {b.notes && <p className="mt-1 rounded-xl bg-sand px-3 py-1.5 text-[13px]">📝 {b.notes}</p>}
                     <p className="mt-1 text-[12px] font-bold">
                       {b.affiliate

@@ -9,11 +9,12 @@ module.exports = {
         cream: "#FFFEFB",
         turquoise: "#3AA99E",
         terracotta: "#D96C3E",
-        peach: "#FFE8D6",
+        peach: "#FFF1EB",
       },
       fontFamily: {
-        serif: ['"Bodoni Moda"', "Georgia", "serif"],
-        sans: ['"Plus Jakarta Sans"', "ui-sans-serif", "system-ui", "sans-serif"],
+        // Plus Jakarta Sans: everything you read. Bodoni Moda: big headlines only (her brand voice).
+        sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "Georgia", "serif"],
       },
     },
   },
