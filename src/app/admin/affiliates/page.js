@@ -49,7 +49,7 @@ export default async function AdminAffiliates() {
                   >
                     {a.approved ? "Desactivar" : "Aprobar"}
                   </ActionButton>
-                  {a.approved && <span className="text-[13px] text-rock/75">Enlace: {site}/?ref={a.code}</span>}
+                  {a.approved && <span className="text-[13px] text-rock/75">Enlace: {site}/a/{a.code}</span>}
                 </div>
               </div>
             );

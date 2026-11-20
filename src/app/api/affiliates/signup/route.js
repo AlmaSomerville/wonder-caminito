@@ -12,12 +12,12 @@ function makeCode(name) {
 export async function POST(req) {
   const b = await req.json().catch(() => ({}));
   const required = ["companyName", "contactName", "email", "password", "taxId"];
-  for (const k of required) if (!String(b[k] || "").trim()) return NextResponse.json({ message: "Please fill all required fields." }, { status: 400 });
-  if (String(b.password).length < 8) return NextResponse.json({ message: "Password must be at least 8 characters." }, { status: 400 });
+  for (const k of required) if (!String(b[k] || "").trim()) return NextResponse.json({ error: "MISSING" }, { status: 400 });
+  if (String(b.password).length < 8) return NextResponse.json({ error: "PASSWORD" }, { status: 400 });
 
   const email = String(b.email).trim().toLowerCase();
   if (await prisma.affiliate.findUnique({ where: { email } }))
-    return NextResponse.json({ message: "That email already has an account. Try the partner login." }, { status: 400 });
+    return NextResponse.json({ error: "EMAIL_TAKEN" }, { status: 400 });
 
   let code = String(b.code || "").toUpperCase().replace(/[^A-Z0-9_-]/g, "").slice(0, 20);
   if (!code) code = makeCode(b.companyName);
