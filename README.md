@@ -28,14 +28,8 @@ Visitors get a 30-day cookie; any booking they make is credited to that partner 
    - `NEXT_PUBLIC_SITE_URL` — your primary domain, e.g. `https://wondercaminito.com`
    - `NEXT_PUBLIC_WHATSAPP` — her number, digits only with country code, e.g. `34612345678`
 5. **Deploy.**
-6. **Create the tables + starter data** (one time). On your computer:
-   ```bash
-   npm install
-   # put the DATABASE_URL from Vercel into a local .env file, then:
-   npm run db:push
-   npm run db:seed
-   ```
-   (Seed creates the settings row, 30 days of 9:00 slots skipping Mondays, and one draft offer.)
+6. **Database tables are automatic.** Every Vercel build runs `scripts/db-setup.mjs`, which creates/updates the
+   tables. The very first deploy also adds starter data (settings + 30 days of 9:00 slots). No local commands needed.
 7. **Domains**: in Vercel → Settings → Domains, add both `wondercaminito.com` (primary) and
    `whereiscaminitodelrey.com`. Set the second to **redirect (308)** to the primary — that way Google
    treats them as one site and all the SEO juice lands in one place.
