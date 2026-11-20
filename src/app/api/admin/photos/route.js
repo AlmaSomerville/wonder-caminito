@@ -3,13 +3,14 @@ import { revalidatePath } from "next/cache";
 import { del } from "@vercel/blob";
 import { prisma } from "@/lib/db";
 import { guard } from "../_guard";
+import { rawBlobUrl, PROXY_PREFIX } from "@/lib/blob";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req) {
   const g = guard(); if (g) return g;
   const { url, caption } = await req.json().catch(() => ({}));
-  if (!url || !/^https:\/\//.test(url)) return NextResponse.json({ message: "Foto no válida." }, { status: 400 });
+  if (!url || !(/^https:\/\//.test(url) || url.startsWith(PROXY_PREFIX))) return NextResponse.json({ message: "Foto no válida." }, { status: 400 });
   const first = await prisma.photo.findFirst({ orderBy: { sort: "asc" } });
   // New photos go to the end of the gallery
   const last = await prisma.photo.findFirst({ orderBy: { sort: "desc" } });
@@ -41,7 +42,7 @@ export async function DELETE(req) {
   const g = guard(); if (g) return g;
   const { id } = await req.json().catch(() => ({}));
   const photo = await prisma.photo.delete({ where: { id } });
-  try { await del(photo.url); } catch {} // file already gone is fine
+  try { await del(rawBlobUrl(photo.url)); } catch {} // file already gone is fine
   revalidatePath("/");
   return NextResponse.json({ ok: true });
 }

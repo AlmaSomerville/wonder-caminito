@@ -13,7 +13,13 @@ async function shrink(file, maxSide) {
 }
 
 export async function uploadImage(file, maxSide = 2000) {
-  const blob = await shrink(file, maxSide);
+  let blob;
+  try {
+    blob = await shrink(file, maxSide);
+  } catch {
+    throw new Error("Este navegador no puede leer esa foto (¿formato HEIC?). Súbela desde el móvil o guárdala como JPG.");
+  }
+  if (!blob) throw new Error("No se ha podido preparar la foto. Prueba con otra.");
   const fd = new FormData();
   fd.append("file", blob, (file.name || "foto").replace(/\.[^.]+$/, "") + ".jpg");
   const res = await fetch("/api/admin/upload", { method: "POST", body: fd });

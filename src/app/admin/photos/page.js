@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import { requireAdmin } from "../lib";
 import { AdminNav } from "../ui";
 import { PhotoManager } from "./manager";
+import { blobConnected } from "@/lib/blob";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +18,7 @@ export default async function AdminPhotos() {
           Sube fotos desde el móvil. Se reducen solas para que la web vaya rápida. La galería solo aparece en la web cuando hay fotos;
           las 8 primeras se muestran (la primera, en grande). Usa las flechas para cambiar el orden.
         </p>
-        <PhotoManager photos={JSON.parse(JSON.stringify(photos))} hasStorage={!!process.env.BLOB_READ_WRITE_TOKEN} />
+        <PhotoManager photos={JSON.parse(JSON.stringify(photos))} hasStorage={blobConnected()} />
       </main>
     </>
   );

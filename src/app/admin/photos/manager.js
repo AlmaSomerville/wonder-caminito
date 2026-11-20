@@ -37,8 +37,8 @@ export function PhotoManager({ photos, hasStorage }) {
       <div className="card mt-5 border-terracotta/40 bg-peach p-5 text-[15px]">
         <p className="font-bold">Falta activar el almacenamiento de fotos.</p>
         <p className="mt-1 text-rock/80">
-          En Vercel: proyecto → <b>Storage</b> → <b>Create Database</b> → <b>Blob</b> → conectarlo a este proyecto. Después, vuelve a desplegar.
-          Solo hay que hacerlo una vez.
+          En Vercel: proyecto → <b>Storage</b> → <b>Create Database</b> → <b>Blob</b> → conectarlo a este proyecto.
+          <b>Si ya lo has conectado</b>, falta volver a desplegar: Deployments → ⋯ → Redeploy. Solo hay que hacerlo una vez.
         </p>
       </div>
     );
@@ -47,6 +47,7 @@ export function PhotoManager({ photos, hasStorage }) {
   return (
     <div className="mt-5 space-y-5">
       <div className="card space-y-3 p-5">
+        <p className="text-[13px] font-bold text-[#2b8a80]">✓ Almacenamiento de fotos conectado</p>
         <div>
           <label className="label">Texto de la foto (opcional)</label>
           <input className="field" placeholder="p. ej. Puente colgante" value={caption} onChange={(e) => setCaption(e.target.value)} />
